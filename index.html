@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arun's Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:       #080b12;
+  --bg2:      #0d1117;
+  --surface:  #111620;
+  --card:     #141921;
+  --rim:      rgba(255,255,255,.07);
+  --rim2:     rgba(255,255,255,.12);
+  --text:     #e8edf5;
+  --text2:    #7c8ca6;
+  --text3:    #3d4a5e;
+  --accent:   #4f8ef7;
+  --accent2:  #7c3aed;
+  --gold:     #f5a623;
+  --gold2:    #e8851a;
+  --green:    #22c55e;
+  --teal:     #0ea5e9;
+  --rose:     #f43f5e;
+  --violet:   #8b5cf6;
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── Background mesh ── */
+.bg-mesh{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(79,142,247,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(124,58,237,.10) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 50% 50%, rgba(8,11,18,.8) 0%, transparent 100%);
+}
+.grid-lines{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+  background-size:60px 60px;
+}
+
+/* ── Layout ── */
+.wrap{
+  position:relative;z-index:1;
+  max-width:1100px;margin:0 auto;
+  padding:0 24px 80px;
+}
+
+/* ── Header ── */
+header{
+  padding:52px 0 16px;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:24px;flex-wrap:wrap;
+}
+.header-left{}
+.portal-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:500;
+  color:var(--accent);letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 12px;
+  background:rgba(79,142,247,.08);
+  border:1px solid rgba(79,142,247,.2);
+  border-radius:99px;margin-bottom:18px;
+}
+.portal-eyebrow::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--accent);animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+.portal-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(36px,6vw,68px);
+  font-weight:800;
+  line-height:1.02;
+  letter-spacing:-2px;
+  color:var(--text);
+  margin-bottom:14px;
+}
+.portal-title span{
+  background:linear-gradient(135deg,var(--accent),var(--violet));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.portal-sub{
+  font-size:15px;font-weight:400;color:var(--text2);
+  max-width:480px;line-height:1.7;
+}
+
+.header-stats{
+  display:flex;flex-direction:column;align-items:flex-end;gap:10px;
+  padding-top:8px;
+}
+.stat-badge{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--text3);
+  letter-spacing:.06em;
+}
+.stat-badge strong{color:var(--text2);}
+
+/* ── Divider ── */
+.divider{
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--rim2) 30%,var(--rim2) 70%,transparent);
+  margin:32px 0 40px;
+}
+
+/* ── Section label ── */
+.section-label{
+  font-family:'Syne',sans-serif;
+  font-size:11px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:24px;
+  display:flex;align-items:center;gap:12px;
+}
+.section-label::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,var(--rim2),transparent);
+}
+
+/* ── Portal grid ── */
+.portal-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px;
+  margin-bottom:60px;
+}
+
+/* ── Portal card ── */
+.card{
+  position:relative;
+  background:var(--card);
+  border:1px solid var(--rim);
+  border-radius:20px;
+  padding:28px;
+  cursor:pointer;
+  text-decoration:none;
+  display:block;
+  transition:transform .25s cubic-bezier(.34,1.4,.64,1),
+             border-color .25s,box-shadow .25s;
+  overflow:hidden;
+  group:true;
+}
+.card::before{
+  content:'';
+  position:absolute;inset:0;border-radius:20px;
+  background:var(--card-glow,radial-gradient(circle at 50% 0%,rgba(79,142,247,.08),transparent 70%));
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+.card:hover{
+  transform:translateY(-4px);
+  border-color:var(--card-rim, rgba(79,142,247,.35));
+  box-shadow:0 20px 60px rgba(0,0,0,.5), 0 0 0 1px var(--card-rim, rgba(79,142,247,.15));
+}
+.card:hover::before{opacity:1;}
+
+/* Top bar accent line */
+.card-bar{
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--card-gradient,linear-gradient(90deg,var(--accent),var(--violet)));
+  border-radius:20px 20px 0 0;opacity:.6;
+  transition:opacity .3s;
+}
+.card:hover .card-bar{opacity:1;}
+
+/* Icon */
+.card-icon{
+  width:52px;height:52px;border-radius:14px;
+  background:var(--icon-bg,rgba(79,142,247,.1));
+  border:1px solid var(--icon-rim,rgba(79,142,247,.2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:18px;
+  transition:transform .25s cubic-bezier(.34,1.4,.64,1);
+}
+.card:hover .card-icon{transform:scale(1.1);}
+
+.card-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:500;letter-spacing:.06em;
+  color:var(--badge-color,var(--accent));
+  background:var(--badge-bg,rgba(79,142,247,.1));
+  border:1px solid var(--badge-rim,rgba(79,142,247,.2));
+  padding:3px 9px;border-radius:99px;
+  margin-bottom:12px;
+}
+.card-badge-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--badge-color,var(--accent));
+}
+
+.card-title{
+  font-family:'Syne',sans-serif;
+  font-size:20px;font-weight:700;
+  color:var(--text);letter-spacing:-.4px;
+  margin-bottom:8px;
+  transition:color .2s;
+}
+.card:hover .card-title{color:var(--card-accent,var(--accent));}
+
+.card-desc{
+  font-size:13px;color:var(--text2);
+  line-height:1.7;margin-bottom:20px;
+}
+
+.card-tags{
+  display:flex;flex-wrap:wrap;gap:6px;
+  margin-bottom:20px;
+}
+.tag{
+  font-size:10px;font-family:'JetBrains Mono',monospace;
+  color:var(--text3);
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--rim);
+  padding:3px 8px;border-radius:6px;
+  letter-spacing:.04em;
+}
+
+.card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:16px;
+  border-top:1px solid var(--rim);
+}
+.card-link-label{
+  font-size:12px;font-weight:600;
+  color:var(--card-accent,var(--accent));
+  display:flex;align-items:center;gap:6px;
+  transition:gap .2s;
+}
+.card:hover .card-link-label{gap:10px;}
+.card-link-arrow{
+  font-size:16px;transition:transform .2s;
+}
+.card:hover .card-link-arrow{transform:translateX(3px);}
+.card-status{
+  font-size:10px;font-family:'JetBrains Mono',monospace;
+  display:flex;align-items:center;gap:5px;
+  color:var(--green);
+}
+.card-status::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 6px var(--green);
+  animation:pulse 2.5s infinite;
+}
+
+/* ── Featured card (spans 2 cols) ── */
+.card.featured{
+  grid-column:span 2;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0;
+  padding:0;
+  align-items:stretch;
+}
+@media(max-width:700px){.card.featured{grid-column:span 1;grid-template-columns:1fr;}}
+.card.featured .card-inner{padding:32px;}
+.card.featured .card-visual{
+  background:var(--featured-visual-bg);
+  border-radius:0 20px 20px 0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:80px;
+  position:relative;overflow:hidden;
+}
+@media(max-width:700px){.card.featured .card-visual{display:none;}}
+.card.featured .card-visual::after{
+  content:'';position:absolute;inset:0;
+  background:var(--featured-overlay);
+}
+
+/* ── Coming soon card ── */
+.card.coming-soon{
+  opacity:.55;cursor:default;pointer-events:none;
+}
+.card.coming-soon:hover{transform:none;}
+.coming-soon-badge{
+  position:absolute;top:16px;right:16px;
+  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text3);
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--rim);
+  padding:3px 8px;border-radius:6px;
+}
+
+/* ── Footer ── */
+footer{
+  border-top:1px solid var(--rim);
+  padding:28px 0;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+}
+.footer-left{
+  font-size:12px;color:var(--text3);
+  font-family:'JetBrains Mono',monospace;
+}
+.footer-left span{color:var(--text2);}
+.footer-right{
+  display:flex;gap:6px;
+}
+.footer-chip{
+  font-size:10px;color:var(--text3);
+  border:1px solid var(--rim);
+  padding:4px 10px;border-radius:6px;
+  letter-spacing:.04em;
+  font-family:'JetBrains Mono',monospace;
+}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .wrap{padding:0 16px 60px;}
+  header{padding:36px 0 12px;}
+  .portal-grid{grid-template-columns:1fr;}
+  .header-stats{display:none;}
+}
+
+/* ── Entrance animations ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px)}
+  to  {opacity:1;transform:translateY(0)}
+}
+.card{animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both;}
+.card:nth-child(1){animation-delay:.05s}
+.card:nth-child(2){animation-delay:.12s}
+.card:nth-child(3){animation-delay:.19s}
+.card:nth-child(4){animation-delay:.26s}
+.card:nth-child(4){animation-delay:.26s}
+.card:nth-child(5){animation-delay:.33s}
+.card:nth-child(6){animation-delay:.40s}
+header{animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both;}
+</style>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<div class="grid-lines"></div>
+
+<div class="wrap">
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="header-left">
+      <div class="portal-eyebrow">Arun's Portal</div>
+      <h1 class="portal-title">AI &amp; Cloud<br><span>Intelligence Hub</span></h1>
+      <p class="portal-sub">
+        A collection of AI-powered tools for cloud infrastructure, pricing intelligence
+        and model selection — built for enterprise teams in the UAE and beyond.
+      </p>
+    </div>
+    <div class="header-stats">
+      <div class="stat-badge"><strong id="tool-count">3</strong> tools available</div>
+      <div class="stat-badge">Hosted on <strong>GitHub Pages</strong></div>
+      <div class="stat-badge">Updated <strong>2025</strong></div>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- ── Tools Grid ── -->
+  <div class="section-label">Available Tools</div>
+
+  <div class="portal-grid" id="portal-grid">
+
+    <!-- ══ CARD 1 — ModelMatch AI ══ -->
+    <a class="card"
+       href="https://arun-cloudsec.github.io/modelmatch/modelmatch-ai"
+       target="_blank"
+       style="
+         --card-glow:radial-gradient(circle at 50% 0%,rgba(245,166,35,.10),transparent 70%);
+         --card-rim:rgba(245,166,35,.35);
+         --icon-bg:rgba(245,166,35,.1);
+         --icon-rim:rgba(245,166,35,.25);
+         --badge-color:#f5a623;
+         --badge-bg:rgba(245,166,35,.1);
+         --badge-rim:rgba(245,166,35,.25);
+         --card-gradient:linear-gradient(90deg,#f5a623,#e8851a);
+         --card-accent:#f5a623;
+       ">
+      <div class="card-bar"></div>
+      <div class="card-icon">◆</div>
+      <div class="card-badge"><span class="card-badge-dot"></span>AI Models</div>
+      <div class="card-title">ModelMatch AI</div>
+      <div class="card-desc">
+        Enterprise LLM intelligence platform. Explore 85+ AI models across LLM, TTS, STT,
+        Vision, Embedding and Code categories with UAE data sovereignty analysis.
+      </div>
+      <div class="card-tags">
+        <span class="tag">LLM</span>
+        <span class="tag">TTS · STT</span>
+        <span class="tag">Vision</span>
+        <span class="tag">UAE Sovereignty</span>
+        <span class="tag">Cost Estimator</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
+        <span class="card-status">Live</span>
+      </div>
+    </a>
+
+    <!-- ══ CARD 2 — MCP Scanning ══ -->
+    <a class="card"
+       href="UPDATE_WITH_MCP_URL"
+       target="_blank"
+       style="
+         --card-glow:radial-gradient(circle at 50% 0%,rgba(34,197,94,.10),transparent 70%);
+         --card-rim:rgba(34,197,94,.35);
+         --icon-bg:rgba(34,197,94,.1);
+         --icon-rim:rgba(34,197,94,.25);
+         --badge-color:#22c55e;
+         --badge-bg:rgba(34,197,94,.1);
+         --badge-rim:rgba(34,197,94,.25);
+         --card-gradient:linear-gradient(90deg,#22c55e,#16a34a);
+         --card-accent:#22c55e;
+       ">
+      <div class="card-bar"></div>
+      <div class="card-icon">🔍</div>
+      <div class="card-badge"><span class="card-badge-dot"></span>Security</div>
+      <div class="card-title">MCP Scanning</div>
+      <div class="card-desc">
+        Model Context Protocol scanning and security analysis. Scan, inspect and
+        audit MCP servers and integrations for vulnerabilities and compliance.
+      </div>
+      <div class="card-tags">
+        <span class="tag">MCP</span>
+        <span class="tag">Security Scan</span>
+        <span class="tag">Compliance</span>
+        <span class="tag">Audit</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
+        <span class="card-status">Live</span>
+      </div>
+    </a>
+
+    <!-- ══ CARD 3 — Cloud Pricer ══ -->
+    <a class="card"
+       href="https://arun-cloudsec.github.io/modelmatch/auth.html"
+       target="_blank"
+       style="
+         --card-glow:radial-gradient(circle at 50% 0%,rgba(14,165,233,.10),transparent 70%);
+         --card-rim:rgba(14,165,233,.35);
+         --icon-bg:rgba(14,165,233,.1);
+         --icon-rim:rgba(14,165,233,.25);
+         --badge-color:#0ea5e9;
+         --badge-bg:rgba(14,165,233,.1);
+         --badge-rim:rgba(14,165,233,.25);
+         --card-gradient:linear-gradient(90deg,#0ea5e9,#0284c7);
+         --card-accent:#0ea5e9;
+       ">
+      <div class="card-bar"></div>
+      <div class="card-icon">☁️</div>
+      <div class="card-badge"><span class="card-badge-dot"></span>Cloud Pricing</div>
+      <div class="card-title">Cloud Pricer Agent</div>
+      <div class="card-desc">
+        AI-powered cloud pricing intelligence across Azure, AWS and GCP. Chat queries,
+        GPU comparisons, Excel price fill and Word document updates for UAE region.
+      </div>
+      <div class="card-tags">
+        <span class="tag">Azure · AWS · GCP</span>
+        <span class="tag">GPU Nodes</span>
+        <span class="tag">Excel Fill</span>
+        <span class="tag">UAE North</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
+        <span class="card-status">Live</span>
+      </div>
+    </a>
+
+
+    <!-- ══ CARD 4 — MCP Scanning ══ -->
+    <a class="card"
+       href="https://arun-cloudsec.github.io/modelmatch/mcp-scanning.html"
+       target="_blank"
+       style="
+         --card-glow:radial-gradient(circle at 50% 0%,rgba(34,197,94,.10),transparent 70%);
+         --card-rim:rgba(34,197,94,.35);
+         --icon-bg:rgba(34,197,94,.1);
+         --icon-rim:rgba(34,197,94,.25);
+         --badge-color:#22c55e;
+         --badge-bg:rgba(34,197,94,.1);
+         --badge-rim:rgba(34,197,94,.25);
+         --card-gradient:linear-gradient(90deg,#22c55e,#16a34a);
+         --card-accent:#22c55e;
+       ">
+      <div class="card-bar"></div>
+      <div class="card-icon">🔍</div>
+      <div class="card-badge"><span class="card-badge-dot"></span>Security</div>
+      <div class="card-title">MCP Scanning</div>
+      <div class="card-desc">
+        MCP server security scanning and vulnerability analysis. Discover, audit and
+        assess Model Context Protocol servers for security risks and compliance posture.
+      </div>
+      <div class="card-tags">
+        <span class="tag">MCP Servers</span>
+        <span class="tag">Security Audit</span>
+        <span class="tag">Vulnerability Scan</span>
+        <span class="tag">Compliance</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
+        <span class="card-status">Live</span>
+      </div>
+    </a>
+
+  </div><!-- end portal-grid -->
+
+  <!-- ── How to add more ── -->
+  <div style="background:rgba(255,255,255,.02);border:1px solid var(--rim);border-radius:16px;padding:20px 24px;margin-bottom:48px;display:flex;align-items:flex-start;gap:16px;">
+    <div style="font-size:22px;flex-shrink:0">+</div>
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">Adding a new tool</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7">
+        Copy any card block in the HTML, update the name, URL, description, tags and accent colour.
+        The grid is fully responsive — it automatically reflows as you add more cards.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-left">
+      Built by <span>Arun</span> · Hosted on GitHub Pages · 2025
+    </div>
+    <div class="footer-right">
+      <span class="footer-chip">Azure UAE North</span>
+      <span class="footer-chip">AWS me-central-1</span>
+      <span class="footer-chip">GCP me-central1</span>
+    </div>
+  </footer>
+
+</div><!-- end wrap -->
+
+<script>
+// Update tool count badge dynamically
+document.addEventListener('DOMContentLoaded',()=>{
+  const count=document.querySelectorAll('#portal-grid .card:not(.coming-soon)').length;
+  document.getElementById('tool-count').textContent=count;
+});
+</script>
+</body>
+</html>
