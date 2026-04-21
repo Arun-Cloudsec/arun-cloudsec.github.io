@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Arun's Portal</title>
+<title>Arun's AI Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -21,7 +22,6 @@
   --accent:   #4f8ef7;
   --accent2:  #7c3aed;
   --gold:     #f5a623;
-  --gold2:    #e8851a;
   --green:    #22c55e;
   --teal:     #0ea5e9;
   --rose:     #f43f5e;
@@ -56,7 +56,7 @@ body{
 /* ── Layout ── */
 .wrap{
   position:relative;z-index:1;
-  max-width:1100px;margin:0 auto;
+  max-width:1200px;margin:0 auto;
   padding:0 24px 80px;
 }
 
@@ -66,7 +66,6 @@ header{
   display:flex;align-items:flex-start;justify-content:space-between;
   gap:24px;flex-wrap:wrap;
 }
-.header-left{}
 .portal-eyebrow{
   display:inline-flex;align-items:center;gap:8px;
   font-family:'JetBrains Mono',monospace;
@@ -116,8 +115,35 @@ header{
 .divider{
   height:1px;
   background:linear-gradient(90deg,transparent,var(--rim2) 30%,var(--rim2) 70%,transparent);
-  margin:32px 0 40px;
+  margin:32px 0 32px;
 }
+
+/* ── Category Tabs ── */
+.tabs-wrap{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:28px;flex-wrap:wrap;
+}
+.tab-pill{
+  display:flex;align-items:center;gap:7px;
+  padding:9px 18px;border-radius:99px;
+  border:1px solid var(--rim2);background:var(--surface);
+  font-size:13px;font-weight:500;color:var(--text2);
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+  font-family:'Inter',sans-serif;
+}
+.tab-pill:hover{border-color:rgba(79,142,247,.4);color:var(--text);}
+.tab-pill.active{
+  background:rgba(79,142,247,.12);
+  border-color:rgba(79,142,247,.45);
+  color:var(--accent);font-weight:600;
+}
+.tab-pill .tab-count{
+  font-size:11px;padding:2px 7px;border-radius:99px;
+  background:rgba(255,255,255,.06);color:var(--text3);
+  font-family:'JetBrains Mono',monospace;
+}
+.tab-pill.active .tab-count{background:rgba(79,142,247,.15);color:var(--accent);}
+.tab-icon{font-size:14px;}
 
 /* ── Section label ── */
 .section-label{
@@ -150,10 +176,10 @@ header{
   cursor:pointer;
   text-decoration:none;
   display:block;
+  color:inherit;
   transition:transform .25s cubic-bezier(.34,1.4,.64,1),
              border-color .25s,box-shadow .25s;
   overflow:hidden;
-  group:true;
 }
 .card::before{
   content:'';
@@ -161,12 +187,12 @@ header{
   background:var(--card-glow,radial-gradient(circle at 50% 0%,rgba(79,142,247,.08),transparent 70%));
   opacity:0;transition:opacity .3s;pointer-events:none;
 }
-.card:hover{
+.card:not(.coming-soon):hover{
   transform:translateY(-4px);
   border-color:var(--card-rim, rgba(79,142,247,.35));
   box-shadow:0 20px 60px rgba(0,0,0,.5), 0 0 0 1px var(--card-rim, rgba(79,142,247,.15));
 }
-.card:hover::before{opacity:1;}
+.card:not(.coming-soon):hover::before{opacity:1;}
 
 /* Top bar accent line */
 .card-bar{
@@ -175,7 +201,7 @@ header{
   border-radius:20px 20px 0 0;opacity:.6;
   transition:opacity .3s;
 }
-.card:hover .card-bar{opacity:1;}
+.card:not(.coming-soon):hover .card-bar{opacity:1;}
 
 /* Icon */
 .card-icon{
@@ -186,7 +212,7 @@ header{
   font-size:24px;margin-bottom:18px;
   transition:transform .25s cubic-bezier(.34,1.4,.64,1);
 }
-.card:hover .card-icon{transform:scale(1.1);}
+.card:not(.coming-soon):hover .card-icon{transform:scale(1.1);}
 
 .card-badge{
   display:inline-flex;align-items:center;gap:5px;
@@ -210,7 +236,7 @@ header{
   margin-bottom:8px;
   transition:color .2s;
 }
-.card:hover .card-title{color:var(--card-accent,var(--accent));}
+.card:not(.coming-soon):hover .card-title{color:var(--card-accent,var(--accent));}
 
 .card-desc{
   font-size:13px;color:var(--text2);
@@ -241,11 +267,9 @@ header{
   display:flex;align-items:center;gap:6px;
   transition:gap .2s;
 }
-.card:hover .card-link-label{gap:10px;}
-.card-link-arrow{
-  font-size:16px;transition:transform .2s;
-}
-.card:hover .card-link-arrow{transform:translateX(3px);}
+.card:not(.coming-soon):hover .card-link-label{gap:10px;}
+.card-link-arrow{font-size:16px;transition:transform .2s;}
+.card:not(.coming-soon):hover .card-link-arrow{transform:translateX(3px);}
 .card-status{
   font-size:10px;font-family:'JetBrains Mono',monospace;
   display:flex;align-items:center;gap:5px;
@@ -258,42 +282,24 @@ header{
   animation:pulse 2.5s infinite;
 }
 
-/* ── Featured card (spans 2 cols) ── */
-.card.featured{
-  grid-column:span 2;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:0;
-  padding:0;
-  align-items:stretch;
-}
-@media(max-width:700px){.card.featured{grid-column:span 1;grid-template-columns:1fr;}}
-.card.featured .card-inner{padding:32px;}
-.card.featured .card-visual{
-  background:var(--featured-visual-bg);
-  border-radius:0 20px 20px 0;
-  display:flex;align-items:center;justify-content:center;
-  font-size:80px;
-  position:relative;overflow:hidden;
-}
-@media(max-width:700px){.card.featured .card-visual{display:none;}}
-.card.featured .card-visual::after{
-  content:'';position:absolute;inset:0;
-  background:var(--featured-overlay);
-}
-
 /* ── Coming soon card ── */
 .card.coming-soon{
-  opacity:.55;cursor:default;pointer-events:none;
+  opacity:.5;cursor:not-allowed;pointer-events:none;
 }
-.card.coming-soon:hover{transform:none;}
-.coming-soon-badge{
-  position:absolute;top:16px;right:16px;
-  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--text3);
-  background:rgba(255,255,255,.05);
-  border:1px solid var(--rim);
-  padding:3px 8px;border-radius:6px;
+.card.coming-soon .card-link-label{color:var(--text3);}
+.card.coming-soon .card-status{color:var(--violet);}
+.card.coming-soon .card-status::before{
+  background:var(--violet);
+  box-shadow:none;
+  animation:none;
+}
+
+/* ── Empty state ── */
+.empty-state{
+  grid-column:1/-1;text-align:center;
+  padding:60px 20px;color:var(--text3);
+  font-size:14px;font-family:'JetBrains Mono',monospace;
+  letter-spacing:.05em;
 }
 
 /* ── Footer ── */
@@ -308,9 +314,7 @@ footer{
   font-family:'JetBrains Mono',monospace;
 }
 .footer-left span{color:var(--text2);}
-.footer-right{
-  display:flex;gap:6px;
-}
+.footer-right{display:flex;gap:6px;flex-wrap:wrap;}
 .footer-chip{
   font-size:10px;color:var(--text3);
   border:1px solid var(--rim);
@@ -319,112 +323,13 @@ footer{
   font-family:'JetBrains Mono',monospace;
 }
 
-/* ── Admin Editor ── */
-#admin-btn{
-  position:fixed;bottom:28px;right:28px;z-index:200;
-  width:44px;height:44px;border-radius:50%;
-  background:var(--surface);border:1px solid var(--rim2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;cursor:pointer;
-  box-shadow:0 4px 24px rgba(0,0,0,.5);
-  transition:border-color .2s,transform .2s;
-}
-#admin-btn:hover{border-color:rgba(79,142,247,.5);transform:scale(1.08);}
-
-#admin-overlay{
-  display:none;position:fixed;inset:0;z-index:300;
-  background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
-  align-items:center;justify-content:center;
-}
-#admin-overlay.open{display:flex;}
-
-#admin-panel{
-  background:var(--bg2);border:1px solid var(--rim2);
-  border-radius:20px;width:min(640px,95vw);max-height:90vh;
-  overflow-y:auto;padding:32px;position:relative;
-  box-shadow:0 32px 80px rgba(0,0,0,.7);
-}
-#admin-panel h2{
-  font-family:'Syne',sans-serif;font-size:20px;font-weight:700;
-  color:var(--text);margin-bottom:4px;
-}
-#admin-panel .admin-sub{
-  font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;
-  margin-bottom:24px;
-}
-.admin-close{
-  position:absolute;top:20px;right:20px;
-  width:32px;height:32px;border-radius:50%;
-  background:rgba(255,255,255,.05);border:1px solid var(--rim);
-  color:var(--text2);font-size:16px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:background .2s;
-}
-.admin-close:hover{background:rgba(255,255,255,.1);}
-
-/* Auth screen */
-#admin-auth{display:block;}
-#admin-editor{display:none;}
-.admin-label{
-  font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--text3);margin-bottom:8px;font-family:'JetBrains Mono',monospace;
-}
-.admin-input{
-  width:100%;background:var(--surface);border:1px solid var(--rim2);
-  border-radius:10px;padding:10px 14px;
-  font-size:14px;color:var(--text);font-family:'Inter',sans-serif;
-  outline:none;transition:border-color .2s;margin-bottom:16px;
-}
-.admin-input:focus{border-color:rgba(79,142,247,.5);}
-.admin-btn-primary{
-  width:100%;padding:11px;border-radius:10px;
-  background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.35);
-  color:var(--accent);font-size:14px;font-weight:600;
-  cursor:pointer;transition:background .2s,border-color .2s;
-  font-family:'Inter',sans-serif;
-}
-.admin-btn-primary:hover{background:rgba(79,142,247,.25);border-color:rgba(79,142,247,.6);}
-.admin-error{
-  font-size:12px;color:var(--rose);margin-top:8px;text-align:center;
-  font-family:'JetBrains Mono',monospace;display:none;
-}
-
-/* Card editor */
-.card-edit-row{
-  border:1px solid var(--rim);border-radius:12px;
-  padding:16px;margin-bottom:12px;background:var(--card);
-}
-.card-edit-name{
-  font-family:'Syne',sans-serif;font-size:14px;font-weight:700;
-  color:var(--text);margin-bottom:12px;
-  display:flex;align-items:center;gap:8px;
-}
-.card-edit-name span{font-size:18px;}
-.edit-field{margin-bottom:10px;}
-.edit-field:last-child{margin-bottom:0;}
-.edit-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-@media(max-width:500px){.edit-row{grid-template-columns:1fr;}}
-.admin-save-btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;padding:12px;border-radius:10px;margin-top:8px;
-  background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);
-  color:var(--green);font-size:14px;font-weight:600;
-  cursor:pointer;transition:background .2s;font-family:'Inter',sans-serif;
-}
-.admin-save-btn:hover{background:rgba(34,197,94,.22);}
-.admin-section-label{
-  font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
-  color:var(--text3);margin:20px 0 12px;font-family:'JetBrains Mono',monospace;
-  display:flex;align-items:center;gap:10px;
-}
-.admin-section-label::after{content:'';flex:1;height:1px;background:var(--rim);}
-
 /* ── Responsive ── */
 @media(max-width:600px){
   .wrap{padding:0 16px 60px;}
   header{padding:36px 0 12px;}
   .portal-grid{grid-template-columns:1fr;}
   .header-stats{display:none;}
+  .card{padding:22px;}
 }
 
 /* ── Entrance animations ── */
@@ -433,53 +338,13 @@ footer{
   to  {opacity:1;transform:translateY(0)}
 }
 .card{animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both;}
-.card:nth-child(1){animation-delay:.05s}
-.card:nth-child(2){animation-delay:.12s}
-.card:nth-child(3){animation-delay:.19s}
-.card:nth-child(4){animation-delay:.26s}
-.card:nth-child(4){animation-delay:.26s}
-.card:nth-child(5){animation-delay:.33s}
-.card:nth-child(6){animation-delay:.40s}
 header{animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both;}
-
-/* ── Category Tabs ── */
-.tabs-wrap{
-  display:flex;align-items:center;gap:8px;
-  margin-bottom:28px;flex-wrap:wrap;
-}
-.tab-pill{
-  display:flex;align-items:center;gap:7px;
-  padding:9px 18px;border-radius:99px;
-  border:1px solid var(--rim2);background:var(--surface);
-  font-size:13px;font-weight:500;color:var(--text2);
-  cursor:pointer;transition:all .2s;white-space:nowrap;
-  font-family:'Inter',sans-serif;
-}
-.tab-pill:hover{border-color:rgba(79,142,247,.4);color:var(--text);}
-.tab-pill.active{
-  background:rgba(79,142,247,.12);
-  border-color:rgba(79,142,247,.45);
-  color:var(--accent);font-weight:600;
-}
-.tab-pill .tab-count{
-  font-size:11px;padding:2px 7px;border-radius:99px;
-  background:rgba(255,255,255,.06);color:var(--text3);
-  font-family:'JetBrains Mono',monospace;
-}
-.tab-pill.active .tab-count{background:rgba(79,142,247,.15);color:var(--accent);}
-
-/* Tab icon */
-.tab-icon{font-size:14px;}
-
-/* Coming-soon card style */
-.card.coming-soon{
-  opacity:.5;cursor:not-allowed;pointer-events:none;
-}
-.card.coming-soon .card-status{background:rgba(124,58,237,.1);color:var(--violet);border-color:rgba(124,58,237,.2);}
-
+.tabs-wrap{animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .1s both;}
+.section-label{animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .15s both;}
 </style>
 </head>
 <body>
+
 <div class="bg-mesh"></div>
 <div class="grid-lines"></div>
 
@@ -488,919 +353,35 @@ header{animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both;}
   <!-- ── Header ── -->
   <header>
     <div class="header-left">
-      <div class="portal-eyebrow">Arun's Portal</div>
+      <div class="portal-eyebrow">Arun's AI Hub</div>
       <h1 class="portal-title">AI &amp; Cloud<br><span>Intelligence Hub</span></h1>
       <p class="portal-sub">
-        A collection of AI-powered tools for cloud infrastructure, pricing intelligence
-        and model selection — built for enterprise teams in the UAE and beyond.
+        A collection of AI-powered enterprise agents for cloud infrastructure,
+        security, pricing intelligence and model selection — built for teams
+        operating in the UAE and beyond.
       </p>
     </div>
     <div class="header-stats">
-      <div class="stat-badge"><strong id="tool-count">3</strong> tools available</div>
-      <div class="stat-badge">Hosted on <strong>GitHub Pages</strong></div>
+      <div class="stat-badge"><strong id="live-total">13</strong> live tools</div>
+      <div class="stat-badge">Hosted on <strong>Azure UAE North</strong></div>
       <div class="stat-badge">Updated <strong>2025</strong></div>
     </div>
   </header>
 
   <div class="divider"></div>
 
-  <!-- ── Tools Grid ── -->
-  <!-- ── Category Tabs ── -->
-  <div class="tabs-wrap" id="tabs">
-    <div class="tab-pill active" data-tab="technology" onclick="switchTab('technology',this)">
-      <span class="tab-icon">💻</span> Technology
-      <span class="tab-count" id="count-technology">0</span>
-    </div>
-    <div class="tab-pill" data-tab="travel" onclick="switchTab('travel',this)">
-      <span class="tab-icon">✈️</span> Travel
-      <span class="tab-count" id="count-travel">0</span>
-    </div>
-    <div class="tab-pill" data-tab="management" onclick="switchTab('management',this)">
-      <span class="tab-icon">📊</span> Management
-      <span class="tab-count" id="count-management">0</span>
-    </div>
-    <div class="tab-pill" data-tab="finance" onclick="switchTab('finance',this)">
-      <span class="tab-icon">💰</span> Finance
-      <span class="tab-count" id="count-finance">0</span>
-    </div>
-    <div class="tab-pill" data-tab="legal" onclick="switchTab('legal',this)">
-      <span class="tab-icon">⚖️</span> Legal
-      <span class="tab-count" id="count-legal">0</span>
-    </div>
-  </div>
+  <!-- ── Category Tabs (rendered by JS) ── -->
+  <div class="tabs-wrap" id="tabs"></div>
 
+  <!-- ── Section label (updated by JS) ── -->
   <div class="section-label" id="section-label">Technology Tools</div>
 
-  <div class="portal-grid" id="portal-grid">
-
-    <!-- ══ CARD 1 — ModelMatch AI ══ -->
-    <a class="card" data-category="technology"
-       href="https://arun-cloudsec.github.io/modelmatch/modelmatch-ai"
-       target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(245,166,35,.10),transparent 70%);
-         --card-rim:rgba(245,166,35,.35);
-         --icon-bg:rgba(245,166,35,.1);
-         --icon-rim:rgba(245,166,35,.25);
-         --badge-color:#f5a623;
-         --badge-bg:rgba(245,166,35,.1);
-         --badge-rim:rgba(245,166,35,.25);
-         --card-gradient:linear-gradient(90deg,#f5a623,#e8851a);
-         --card-accent:#f5a623;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">◆</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>AI Models</div>
-      <div class="card-title">ModelMatch AI</div>
-      <div class="card-desc">
-        Enterprise LLM intelligence platform. Explore 85+ AI models across LLM, TTS, STT,
-        Vision, Embedding and Code categories with UAE data sovereignty analysis.
-      </div>
-      <div class="card-tags">
-        <span class="tag">LLM</span>
-        <span class="tag">TTS · STT</span>
-        <span class="tag">Vision</span>
-        <span class="tag">UAE Sovereignty</span>
-        <span class="tag">Cost Estimator</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Live</span>
-      </div>
-    </a>
-
-    <!-- ══ CARD 2 — MCP Scanning ══ -->
-    <a class="card" data-category="technology"
-       href="https://arun-cloudsec.github.io/mcp-scanner/mcp-scanner.html"
-       target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(34,197,94,.10),transparent 70%);
-         --card-rim:rgba(34,197,94,.35);
-         --icon-bg:rgba(34,197,94,.1);
-         --icon-rim:rgba(34,197,94,.25);
-         --badge-color:#22c55e;
-         --badge-bg:rgba(34,197,94,.1);
-         --badge-rim:rgba(34,197,94,.25);
-         --card-gradient:linear-gradient(90deg,#22c55e,#16a34a);
-         --card-accent:#22c55e;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">🔍</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Security</div>
-      <div class="card-title">MCP Scanning</div>
-      <div class="card-desc">
-        Model Context Protocol scanning and security analysis. Scan, inspect and
-        audit MCP servers and integrations for vulnerabilities and compliance.
-      </div>
-      <div class="card-tags">
-        <span class="tag">MCP</span>
-        <span class="tag">Security Scan</span>
-        <span class="tag">Compliance</span>
-        <span class="tag">Audit</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Live</span>
-      </div>
-    </a>
-
-    <!-- ══ CARD 3 — Cloud Pricer ══ -->
-    <a class="card" data-category="technology"
-       href="https://arun-cloudsec.github.io/cloud-pricing/app.html"
-       target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(14,165,233,.10),transparent 70%);
-         --card-rim:rgba(14,165,233,.35);
-         --icon-bg:rgba(14,165,233,.1);
-         --icon-rim:rgba(14,165,233,.25);
-         --badge-color:#0ea5e9;
-         --badge-bg:rgba(14,165,233,.1);
-         --badge-rim:rgba(14,165,233,.25);
-         --card-gradient:linear-gradient(90deg,#0ea5e9,#0284c7);
-         --card-accent:#0ea5e9;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">☁️</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Cloud Pricing</div>
-      <div class="card-title">Cloud Pricer Agent</div>
-      <div class="card-desc">
-        AI-powered cloud pricing intelligence across Azure, AWS and GCP. Chat queries,
-        GPU comparisons, Excel price fill and Word document updates for UAE region.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Azure · AWS · GCP</span>
-        <span class="tag">GPU Nodes</span>
-        <span class="tag">Excel Fill</span>
-        <span class="tag">UAE North</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Live</span>
-      </div>
-    </a>
-
-
-
-
-
-    <!-- ══ CARD 4 — Threat Model ══ -->
-    <a class="card" data-category="technology"
-       href="https://arun-cloudsec.github.io/threat-model/"
-       target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(244,63,94,.10),transparent 70%);
-         --card-rim:rgba(244,63,94,.35);
-         --icon-bg:rgba(244,63,94,.1);
-         --icon-rim:rgba(244,63,94,.25);
-         --badge-color:#f43f5e;
-         --badge-bg:rgba(244,63,94,.1);
-         --badge-rim:rgba(244,63,94,.25);
-         --card-gradient:linear-gradient(90deg,#f43f5e,#be123c);
-         --card-accent:#f43f5e;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">🛡️</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Security</div>
-      <div class="card-title">ThreatAI — Threat Modeler</div>
-      <div class="card-desc">
-        Automated 6-phase AI threat modeling. Generates STRIDE analysis, DREAD scoring,
-        risk registers, compliance gap mapping and PASTA analysis for any system architecture.
-      </div>
-      <div class="card-tags">
-        <span class="tag">STRIDE</span>
-        <span class="tag">DREAD</span>
-        <span class="tag">PASTA</span>
-        <span class="tag">ISO27001 · NIST</span>
-        <span class="tag">Excel · PPT Export</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Live</span>
-      </div>
-    </a>
-
-    <!-- ══ CARD 5 — RFP Agent ══ -->
-    <a class="card" data-category="technology"
-       href="https://agents172-prod.azurewebsites.net/"
-       target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(245,166,35,.10),transparent 70%);
-         --card-rim:rgba(245,166,35,.35);
-         --icon-bg:rgba(245,166,35,.1);
-         --icon-rim:rgba(245,166,35,.25);
-         --badge-color:#f5a623;
-         --badge-bg:rgba(245,166,35,.1);
-         --badge-rim:rgba(245,166,35,.25);
-         --card-gradient:linear-gradient(90deg,#f5a623,#d97706);
-         --card-accent:#f5a623;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">📋</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>AI Agent</div>
-      <div class="card-title">RFP Agent</div>
-      <div class="card-desc">
-        AI-powered RFP response agent. Automatically analyses tender documents,
-        extracts requirements and generates structured, compliant proposal responses.
-      </div>
-      <div class="card-tags">
-        <span class="tag">RFP Automation</span>
-        <span class="tag">Document Analysis</span>
-        <span class="tag">Proposal Generation</span>
-        <span class="tag">Azure Hosted</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Live</span>
-      </div>
-    </a>
-
-    <!-- ══ CARD 6 — AI Security Sentinel ══ -->
-    <a class="card" data-category="technology"
-       href="https://arun-cloudsec.github.io/ai-security/ai-security-slides.html"
-       target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(0,212,255,.10),transparent 70%);
-         --card-rim:rgba(0,212,255,.35);
-         --icon-bg:rgba(0,212,255,.08);
-         --icon-rim:rgba(0,212,255,.2);
-         --badge-color:#00d4ff;
-         --badge-bg:rgba(0,212,255,.08);
-         --badge-rim:rgba(0,212,255,.2);
-         --card-gradient:linear-gradient(90deg,#00d4ff,#0284c7);
-         --card-accent:#00d4ff;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">⚡</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>AI Security</div>
-      <div class="card-title">AI-Security</div>
-      <div class="card-desc">
-        The first self-hosted, Claude-powered security platform for Agentic AI,
-        RAG pipelines and MCP servers. Free to deploy, enterprise-grade protection.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Agentic AI</span>
-        <span class="tag">RAG Security</span>
-        <span class="tag">MCP Servers</span>
-        <span class="tag">Self-Hosted</span>
-        <span class="tag">Enterprise</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Live</span>
-      </div>
-    </a>
-
-
-    <!-- ══ CARD 7 — ARIA Personal AI Assistant ══ -->
-    <a class="card" data-category="technology"
-       href="https://arun-cloudsec.github.io/ai-assistant/ai-assistant-slides.html"
-       target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(232,184,75,.12),transparent 70%);
-         --card-rim:rgba(232,184,75,.38);
-         --icon-bg:rgba(232,184,75,.1);
-         --icon-rim:rgba(232,184,75,.25);
-         --badge-color:#e8b84b;
-         --badge-bg:rgba(232,184,75,.1);
-         --badge-rim:rgba(232,184,75,.25);
-         --card-gradient:linear-gradient(90deg,#e8b84b,#f07832);
-         --card-accent:#e8b84b;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">🤖</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Personal AI</div>
-      <div class="card-title">ARIA — Personal AI Assistant</div>
-      <div class="card-desc">
-        Your dedicated personal AI agent — private by design, hosted on Azure UAE North.
-        49 AI skills across writing, UAE legal, finance, technology, productivity and lifestyle.
-        PDPL compliant with enterprise-grade data isolation per user.
-      </div>
-      <div class="card-tags">
-        <span class="tag">49 AI Skills</span>
-        <span class="tag">UAE Legal</span>
-        <span class="tag">PDPL Compliant</span>
-        <span class="tag">Azure UAE North</span>
-        <span class="tag">Private Agent</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Live</span>
-      </div>
-    </a>
-
-    <!-- ══ CARD 8 — SaaS Pricing Agent ══ -->
-    <a class="card" data-category="technology"
-       href="https://arun-cloudsec.github.io/saas-pricing-agent/saas-pricing-agent.html"
-       target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(217,70,239,.12),transparent 70%);
-         --card-rim:rgba(217,70,239,.38);
-         --icon-bg:rgba(217,70,239,.1);
-         --icon-rim:rgba(217,70,239,.25);
-         --badge-color:#d946ef;
-         --badge-bg:rgba(217,70,239,.1);
-         --badge-rim:rgba(217,70,239,.25);
-         --card-gradient:linear-gradient(90deg,#d946ef,#a21caf);
-         --card-accent:#d946ef;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">💼</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>SaaS Pricing</div>
-      <div class="card-title">SaaS Pricing Agent</div>
-      <div class="card-desc">
-        AI-powered SaaS pricing intelligence. Compare vendor plans, analyse licensing
-        models, estimate total cost of ownership and surface the best-fit SaaS
-        solutions for enterprise procurement decisions.
-      </div>
-      <div class="card-tags">
-        <span class="tag">SaaS Vendors</span>
-        <span class="tag">Plan Compare</span>
-        <span class="tag">TCO Analysis</span>
-        <span class="tag">Licensing</span>
-        <span class="tag">Procurement</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Live</span>
-      </div>
-    </a>
-
-    <!-- ══ FINOPS AGENT ══ -->
-    <a class="card coming-soon" data-category="technology"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(16,185,129,.10),transparent 70%);
-         --card-rim:rgba(16,185,129,.35);
-         --icon-bg:rgba(16,185,129,.08);
-         --icon-rim:rgba(16,185,129,.2);
-         --badge-color:#10b981;
-         --badge-bg:rgba(16,185,129,.08);
-         --badge-rim:rgba(16,185,129,.2);
-         --card-gradient:linear-gradient(90deg,#10b981,#059669);
-         --card-accent:#10b981;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">💰</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>FinOps AI</div>
-      <div class="card-title">FinOps Agent for Azure</div>
-      <div class="card-desc">
-        AI-powered Azure cost optimisation agent. Analyses spending patterns, identifies
-        waste, right-sizes resources, and generates automated savings recommendations
-        across subscriptions — powered by Claude.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Azure Cost</span>
-        <span class="tag">FinOps</span>
-        <span class="tag">Optimisation</span>
-        <span class="tag">Budgets</span>
-        <span class="tag">Savings</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status card-status--soon">Soon</span>
-      </div>
-    </a>
-
-    <!-- ══ ACCESS CONTROL REVIEW ══ -->
-    <a class="card coming-soon" data-category="technology"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(245,158,11,.10),transparent 70%);
-         --card-rim:rgba(245,158,11,.35);
-         --icon-bg:rgba(245,158,11,.08);
-         --icon-rim:rgba(245,158,11,.2);
-         --badge-color:#f59e0b;
-         --badge-bg:rgba(245,158,11,.08);
-         --badge-rim:rgba(245,158,11,.2);
-         --card-gradient:linear-gradient(90deg,#f59e0b,#d97706);
-         --card-accent:#f59e0b;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">🔐</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>IAM AI</div>
-      <div class="card-title">Access Control Review</div>
-      <div class="card-desc">
-        AI-driven identity and access management audit. Continuously reviews Azure RBAC,
-        Entra ID permissions and privileged roles — surfacing anomalies, over-provisioned
-        accounts and compliance gaps with AI insights.
-      </div>
-      <div class="card-tags">
-        <span class="tag">RBAC</span>
-        <span class="tag">Entra ID</span>
-        <span class="tag">IAM Audit</span>
-        <span class="tag">Compliance</span>
-        <span class="tag">Zero Trust</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status card-status--soon">Soon</span>
-      </div>
-    </a>
-
-    <!-- ══ DATA PRIVACY AGENT ══ -->
-    <a class="card coming-soon" data-category="technology"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(139,92,246,.10),transparent 70%);
-         --card-rim:rgba(139,92,246,.35);
-         --icon-bg:rgba(139,92,246,.08);
-         --icon-rim:rgba(139,92,246,.2);
-         --badge-color:#8b5cf6;
-         --badge-bg:rgba(139,92,246,.08);
-         --badge-rim:rgba(139,92,246,.2);
-         --card-gradient:linear-gradient(90deg,#8b5cf6,#7c3aed);
-         --card-accent:#8b5cf6;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">🛡️</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Privacy AI</div>
-      <div class="card-title">Data Privacy Agent</div>
-      <div class="card-desc">
-        Intelligent data privacy compliance agent. Scans, classifies and monitors
-        sensitive data across Azure storage and databases — enforcing PDPL, GDPR
-        and UAE data residency requirements with automated remediation.
-      </div>
-      <div class="card-tags">
-        <span class="tag">PDPL</span>
-        <span class="tag">GDPR</span>
-        <span class="tag">Data Classification</span>
-        <span class="tag">Compliance</span>
-        <span class="tag">UAE Data Laws</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status card-status--soon">Soon</span>
-      </div>
-    </a>
-
-    <!-- ══ TRAVEL CARDS ══ -->
-    <a class="card" data-category="travel"
-       href="https://arun-cloudsec.github.io/travelmind/travelmind.html"
-       target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(14,165,233,.10),transparent 70%);
-         --card-rim:rgba(14,165,233,.35);
-         --icon-bg:rgba(14,165,233,.1);
-         --icon-rim:rgba(14,165,233,.25);
-         --badge-color:#0ea5e9;
-         --badge-bg:rgba(14,165,233,.1);
-         --badge-rim:rgba(14,165,233,.25);
-         --card-gradient:linear-gradient(90deg,#0ea5e9,#0284c7);
-         --card-accent:#0ea5e9;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">✈️</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Travel AI</div>
-      <div class="card-title">TravelMind AI</div>
-      <div class="card-desc">
-        AI-powered travel planning agent. Generate full itineraries, budget quotes,
-        hotel and airline recommendations, visa contacts and SIM card guides for any destination.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Itinerary</span>
-        <span class="tag">Budget Planner</span>
-        <span class="tag">15 Languages</span>
-        <span class="tag">Voice Summary</span>
-        <span class="tag">WhatsApp Share</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Live</span>
-      </div>
-    </a>
-
-    <a class="card coming-soon" data-category="travel"
-       href="#" target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(139,92,246,.08),transparent 70%);
-         --card-rim:rgba(139,92,246,.2);
-         --card-gradient:linear-gradient(90deg,#8b5cf6,#6d28d9);
-         --card-accent:#8b5cf6;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">🗺️</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Coming Soon</div>
-      <div class="card-title">Visa & Permit Agent</div>
-      <div class="card-desc">
-        Automated visa requirement checker, application guide and document checklist
-        for travel between any two countries. Powered by live government data.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Visa Check</span>
-        <span class="tag">Documents</span>
-        <span class="tag">Processing Times</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Soon</span>
-      </div>
-    </a>
-
-    <!-- ══ MANAGEMENT CARDS ══ -->
-    <a class="card" data-category="management"
-       href="https://arun-cloudsec.github.io/CEO-Morning-Brief/"
-       target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(242,141,100,.10),transparent 70%);
-         --card-rim:rgba(242,141,100,.35);
-         --icon-bg:rgba(242,141,100,.1);
-         --icon-rim:rgba(242,141,100,.25);
-         --badge-color:#F28D64;
-         --badge-bg:rgba(242,141,100,.1);
-         --badge-rim:rgba(242,141,100,.25);
-         --card-gradient:linear-gradient(90deg,#F28D64,#6D69F0);
-         --card-accent:#F28D64;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">◆</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>CEO Agent</div>
-      <div class="card-title">Strategic Intelligence Agent</div>
-      <div class="card-desc">
-        CEO morning brief. Competitor tracking, market signals, regulatory alerts
-        and top-5 priorities — synthesised from 200+ sources daily.
-      </div>
-      <div class="card-tags">
-        <span class="tag">CEO Brief</span>
-        <span class="tag">Competitor Watch</span>
-        <span class="tag">Market Signals</span>
-        <span class="tag">AI Analysis</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Portal <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Live</span>
-      </div>
-    </a>
-
-    <a class="card" data-category="management"
-       href="#agent2"
-       onclick="event.preventDefault();showToast('Deploy agent2_board_comms.html to GitHub')"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(109,105,240,.10),transparent 70%);
-         --card-rim:rgba(109,105,240,.35);
-         --icon-bg:rgba(109,105,240,.1);
-         --icon-rim:rgba(109,105,240,.25);
-         --badge-color:#6D69F0;
-         --badge-bg:rgba(109,105,240,.1);
-         --badge-rim:rgba(109,105,240,.25);
-         --card-gradient:linear-gradient(90deg,#6D69F0,#8F70C0);
-         --card-accent:#6D69F0;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">📋</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>CEO Agent</div>
-      <div class="card-title">Board & Investor Comms</div>
-      <div class="card-desc">
-        Drafts board packs, investor updates, earnings call scripts and Q&A preparation.
-        4 document types with chat-based editing assistant.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Board Pack</span>
-        <span class="tag">Investor Update</span>
-        <span class="tag">Earnings Script</span>
-        <span class="tag">Q&A Prep</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Agent <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Ready</span>
-      </div>
-    </a>
-
-    <a class="card" data-category="management"
-       href="#agent3"
-       onclick="event.preventDefault();showToast('Deploy agent3_operations.html to GitHub')"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(52,211,153,.10),transparent 70%);
-         --card-rim:rgba(52,211,153,.35);
-         --icon-bg:rgba(52,211,153,.1);
-         --icon-rim:rgba(52,211,153,.25);
-         --badge-color:#34D399;
-         --badge-bg:rgba(52,211,153,.1);
-         --badge-rim:rgba(52,211,153,.25);
-         --card-gradient:linear-gradient(90deg,#34D399,#059669);
-         --card-accent:#34D399;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">⚙️</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>COO Agent</div>
-      <div class="card-title">Operations Intelligence</div>
-      <div class="card-desc">
-        COO dashboard with live ops health score, exception alerts, cross-department
-        bottleneck detection and weekly action plan across 8 departments.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Ops Health</span>
-        <span class="tag">Alerts</span>
-        <span class="tag">Bottlenecks</span>
-        <span class="tag">COO Actions</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Agent <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Ready</span>
-      </div>
-    </a>
-
-
-    <!-- ══ Exec Overview Agent ══ -->
-    <a class="card" data-category="management"
-       href="https://arun-cloudsec.github.io/exec-overview/agent_exec_overview.html"
-       target="_blank"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(143,112,192,.14),transparent 70%);
-         --card-rim:rgba(143,112,192,.4);
-         --icon-bg:rgba(143,112,192,.12);
-         --icon-rim:rgba(143,112,192,.28);
-         --badge-color:#8F70C0;
-         --badge-bg:rgba(143,112,192,.1);
-         --badge-rim:rgba(143,112,192,.25);
-         --card-gradient:linear-gradient(90deg,#F28D64,#8F70C0,#6D69F0);
-         --card-accent:#8F70C0;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">◆</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>C-Suite Agent</div>
-      <div class="card-title">Executive Overview Agent</div>
-      <div class="card-desc">
-        Role-aware AI summarisation for C-suite. Choose CEO, COO, CTO, CFO or CISO —
-        the AI reads any document and surfaces only what matters to your specific role.
-      </div>
-      <div class="card-tags">
-        <span class="tag">CEO · COO · CTO</span>
-        <span class="tag">CFO · CISO</span>
-        <span class="tag">Voice Summary</span>
-        <span class="tag">PDF · WhatsApp</span>
-        <span class="tag">Role Lens</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Open Agent <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Live</span>
-      </div>
-    </a>
-
-    <a class="card coming-soon" data-category="management"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(251,191,36,.08),transparent 70%);
-         --card-rim:rgba(251,191,36,.2);
-         --card-gradient:linear-gradient(90deg,#fbbf24,#d97706);
-         --card-accent:#fbbf24;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">🎯</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Coming Soon</div>
-      <div class="card-title">Decision Support Agent</div>
-      <div class="card-desc">
-        Scenario modelling, M&A diligence, document Q&A and risk analysis for
-        CEO and COO. Upload any document and ask strategic questions.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Scenario Model</span>
-        <span class="tag">Risk Analysis</span>
-        <span class="tag">M&A Diligence</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Soon</span>
-      </div>
-    </a>
-
-    <a class="card coming-soon" data-category="management"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(242,141,100,.08),transparent 70%);
-         --card-rim:rgba(242,141,100,.2);
-         --card-gradient:linear-gradient(90deg,#F28D64,#8F70C0);
-         --card-accent:#F28D64;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">📅</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Coming Soon</div>
-      <div class="card-title">Exec Calendar & Comms</div>
-      <div class="card-desc">
-        Email triage, meeting briefs, response drafting and follow-up tracking
-        for CEO and COO. Pre-meeting prep with context on who you're meeting.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Email Triage</span>
-        <span class="tag">Meeting Prep</span>
-        <span class="tag">Draft Responses</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Soon</span>
-      </div>
-    </a>
-
-    <a class="card coming-soon" data-category="management"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(139,92,246,.08),transparent 70%);
-         --card-rim:rgba(139,92,246,.2);
-         --card-gradient:linear-gradient(90deg,#8b5cf6,#6d28d9);
-         --card-accent:#8b5cf6;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">👥</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Coming Soon</div>
-      <div class="card-title">Talent & People Intelligence</div>
-      <div class="card-desc">
-        Attrition risk, hiring pipeline health, org engagement signals and
-        succession gap analysis for COO and CHRO.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Attrition Risk</span>
-        <span class="tag">Hiring Pipeline</span>
-        <span class="tag">Succession</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Soon</span>
-      </div>
-    </a>
-
-    <!-- ══ FINANCE CARDS ══ -->
-    <a class="card coming-soon" data-category="finance"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(34,197,94,.08),transparent 70%);
-         --card-rim:rgba(34,197,94,.2);
-         --card-gradient:linear-gradient(90deg,#22c55e,#15803d);
-         --card-accent:#22c55e;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">📈</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Coming Soon</div>
-      <div class="card-title">Financial Forecasting Agent</div>
-      <div class="card-desc">
-        AI-powered P&L forecasting, cash flow modelling and scenario planning.
-        Upload financials and get CFO-grade commentary in minutes.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Forecast</span>
-        <span class="tag">Cash Flow</span>
-        <span class="tag">Scenario Plan</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Soon</span>
-      </div>
-    </a>
-
-    <a class="card coming-soon" data-category="finance"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(251,191,36,.08),transparent 70%);
-         --card-rim:rgba(251,191,36,.2);
-         --card-gradient:linear-gradient(90deg,#fbbf24,#b45309);
-         --card-accent:#fbbf24;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">🧾</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Coming Soon</div>
-      <div class="card-title">Invoice & AP Agent</div>
-      <div class="card-desc">
-        Automated invoice processing, accounts payable matching and payment
-        approval workflows. Reduces manual finance ops by 80%.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Invoice OCR</span>
-        <span class="tag">AP Matching</span>
-        <span class="tag">Approval Flow</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Soon</span>
-      </div>
-    </a>
-
-    <a class="card coming-soon" data-category="finance"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(14,165,233,.08),transparent 70%);
-         --card-rim:rgba(14,165,233,.2);
-         --card-gradient:linear-gradient(90deg,#0ea5e9,#1d4ed8);
-         --card-accent:#0ea5e9;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">📊</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Coming Soon</div>
-      <div class="card-title">Budget Intelligence Agent</div>
-      <div class="card-desc">
-        Department budget tracking, variance analysis and reforecast recommendations.
-        Connects to your ERP and surfaces overspend before it happens.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Budget Track</span>
-        <span class="tag">Variance</span>
-        <span class="tag">Reforecast</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Soon</span>
-      </div>
-    </a>
-
-    <!-- ══ LEGAL CARDS ══ -->
-    <a class="card coming-soon" data-category="legal"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(244,63,94,.08),transparent 70%);
-         --card-rim:rgba(244,63,94,.2);
-         --card-gradient:linear-gradient(90deg,#f43f5e,#9f1239);
-         --card-accent:#f43f5e;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">📝</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Coming Soon</div>
-      <div class="card-title">Contract Review Agent</div>
-      <div class="card-desc">
-        AI-powered contract analysis. Flags unfavourable clauses, missing protections,
-        liability exposure and compliance gaps across any contract type.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Contract Analysis</span>
-        <span class="tag">Clause Flags</span>
-        <span class="tag">Liability Review</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Soon</span>
-      </div>
-    </a>
-
-    <a class="card coming-soon" data-category="legal"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(139,92,246,.08),transparent 70%);
-         --card-rim:rgba(139,92,246,.2);
-         --card-gradient:linear-gradient(90deg,#8b5cf6,#4f46e5);
-         --card-accent:#8b5cf6;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">⚖️</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Coming Soon</div>
-      <div class="card-title">Compliance Monitor Agent</div>
-      <div class="card-desc">
-        Regulatory compliance tracking for UAE, GDPR, ISO27001, NIST and DIFC.
-        Monitors policy changes and flags gaps in your current controls.
-      </div>
-      <div class="card-tags">
-        <span class="tag">UAE Compliance</span>
-        <span class="tag">GDPR</span>
-        <span class="tag">ISO 27001</span>
-        <span class="tag">DIFC</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Soon</span>
-      </div>
-    </a>
-
-    <a class="card coming-soon" data-category="legal"
-       href="#"
-       style="
-         --card-glow:radial-gradient(circle at 50% 0%,rgba(14,165,233,.08),transparent 70%);
-         --card-rim:rgba(14,165,233,.2);
-         --card-gradient:linear-gradient(90deg,#0ea5e9,#0284c7);
-         --card-accent:#0ea5e9;
-       ">
-      <div class="card-bar"></div>
-      <div class="card-icon">🔒</div>
-      <div class="card-badge"><span class="card-badge-dot"></span>Coming Soon</div>
-      <div class="card-title">NDA & Policy Drafter</div>
-      <div class="card-desc">
-        Generate NDAs, privacy policies, terms of service and internal policies
-        tailored to UAE, DIFC, ADGM or international jurisdiction requirements.
-      </div>
-      <div class="card-tags">
-        <span class="tag">NDA Generator</span>
-        <span class="tag">Privacy Policy</span>
-        <span class="tag">UAE / DIFC</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-link-label">Coming Soon <span class="card-link-arrow">→</span></span>
-        <span class="card-status">Soon</span>
-      </div>
-    </a>
-
-  </div><!-- end portal-grid -->
-
-  <!-- ── How to add more ── -->
-  <div style="background:rgba(255,255,255,.02);border:1px solid var(--rim);border-radius:16px;padding:20px 24px;margin-bottom:48px;display:flex;align-items:flex-start;gap:16px;">
-    <div style="font-size:22px;flex-shrink:0">+</div>
-    <div>
-      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">Adding a new tool</div>
-      <div style="font-size:12px;color:var(--text2);line-height:1.7">
-        Copy any card block in the HTML, update the name, URL, description, tags and accent colour.
-        The grid is fully responsive — it automatically reflows as you add more cards.
-      </div>
-    </div>
-  </div>
+  <!-- ── Portal Grid (rendered by JS) ── -->
+  <div class="portal-grid" id="portal-grid"></div>
 
   <!-- ── Footer ── -->
   <footer>
-    <div class="footer-left">
-      Built by <span>Arun</span> · Hosted on GitHub Pages · 2025
-    </div>
+    <div class="footer-left">Arun's AI Hub <span>· Enterprise Agents</span> · 2025</div>
     <div class="footer-right">
       <span class="footer-chip">Azure UAE North</span>
       <span class="footer-chip">AWS me-central-1</span>
@@ -1408,243 +389,319 @@ header{animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both;}
     </div>
   </footer>
 
-</div><!-- end wrap -->
-
-<!-- ── Admin Edit Button ── -->
-<div id="admin-btn" title="Edit portal" onclick="openAdmin()">✏️</div>
-
-<!-- ── Admin Overlay ── -->
-<div id="admin-overlay" onclick="closeAdminIfOutside(event)">
-  <div id="admin-panel">
-    <div class="admin-close" onclick="closeAdmin()">✕</div>
-    <h2>Portal Editor</h2>
-    <div class="admin-sub">// admin · passcode required</div>
-
-    <!-- Auth screen -->
-    <div id="admin-auth">
-      <div class="admin-label">Passcode</div>
-      <input class="admin-input" id="admin-pass" type="password"
-        placeholder="Enter passcode" onkeydown="if(event.key==='Enter')checkPass()">
-      <button class="admin-btn-primary" onclick="checkPass()">Unlock editor →</button>
-      <div class="admin-error" id="admin-err">Incorrect passcode</div>
-    </div>
-
-    <!-- Editor screen -->
-    <div id="admin-editor">
-      <div class="admin-section-label">Live cards</div>
-      <div id="cards-editor"></div>
-      <button class="admin-save-btn" onclick="saveChanges()">
-        <span>💾</span> Save &amp; apply changes
-      </button>
-    </div>
-  </div>
 </div>
 
 <script>
-// ── Admin Editor ──────────────────────────────────────────────────────────
-// Passcode is hashed — default passcode: aria2025
-// To change: replace PASS_HASH with btoa(yourNewPasscode)
-const PASS_HASH = btoa('aria2025');
+/* ═══════════════════════════════════════════════════════════════════
+   CONFIGURATION
+═══════════════════════════════════════════════════════════════════ */
 
-function openAdmin(){
-  document.getElementById('admin-overlay').classList.add('open');
-  document.getElementById('admin-pass').focus();
+/* BASE URL — leave as "" when index.html is in the same root folder
+   as your agent sub-folders on Azure Static Web. */
+const BASE = "";
+
+/* Categories shown as tabs. Order matters — first is the default active tab. */
+const CATEGORIES = [
+  { id:"Technology", label:"Technology", icon:"💻" },
+  { id:"Security",   label:"Security",   icon:"🛡️" },
+  { id:"Cloud",      label:"Cloud",      icon:"☁️" },
+  { id:"Management", label:"Management", icon:"📊" },
+  { id:"Finance",    label:"Finance",    icon:"💰" },
+  { id:"Travel",     label:"Travel",     icon:"✈️" },
+  { id:"Legal",      label:"Legal",      icon:"⚖️" },
+];
+
+/* Agents — each has a single `color` hex that drives the whole card theme. */
+const AGENTS = [
+  /* ─── Technology ─── */
+  {
+    icon:"◆", color:"#f5a623", cat:"Technology", badge:"AI Models",
+    name:"ModelMatch AI",
+    desc:"Enterprise LLM intelligence platform. Explore 85+ AI models across LLM, TTS, STT, Vision, Embedding and Code categories with UAE data sovereignty analysis.",
+    tags:["LLM","TTS · STT","Vision","UAE Sovereignty","Cost Estimator"],
+    path:"modelmatch/modelmatch-ai.html", live:true
+  },
+  {
+    icon:"📋", color:"#7c5ce4", cat:"Technology", badge:"AI Agent",
+    name:"RFP Agent",
+    desc:"AI-powered RFP response agent. Automatically analyses tender documents, extracts requirements and generates structured, compliant proposal responses.",
+    tags:["RFP Automation","Document Analysis","Proposal Generation","Railway Hosted"],
+    external:"https://vercel-rfp-production.up.railway.app/app", live:true
+  },
+  {
+    icon:"✅", color:"#22c55e", cat:"Technology", badge:"Compliance",
+    name:"Partner Compliance Agent",
+    desc:"Upload a partner's questionnaire response. In seconds, an AI architect tells you whether you can be compliant, flags vague or incorrectly-declined items, and rewrites responses citing the right Azure or on-prem services.",
+    tags:["Questionnaire","Compliance Check","Response Rewrite","Azure Mapping"],
+    external:"https://partner-complaince-production.up.railway.app/", live:true
+  },
+  {
+    icon:"🤖", color:"#e8b84b", cat:"Technology", badge:"Personal AI",
+    name:"ARIA — Personal AI Assistant",
+    desc:"Your dedicated personal AI agent — private by design, hosted on Azure UAE North. 49 AI skills across writing, UAE legal, finance, technology and productivity.",
+    tags:["49 AI Skills","UAE Legal","PDPL Compliant","Azure UAE North","Private Agent"],
+    path:"ai-assistant/ai-assistant-slides.html", live:true
+  },
+
+  /* ─── Security ─── */
+  {
+    icon:"🔍", color:"#22c55e", cat:"Security", badge:"Security Scan",
+    name:"MCP Scanner",
+    desc:"Model Context Protocol scanning and security analysis. Scan, inspect and audit MCP servers and integrations for vulnerabilities and compliance.",
+    tags:["MCP","Security Scan","Compliance","Audit"],
+    path:"mcp-scanner/mcp-scanner.html", live:true
+  },
+  {
+    icon:"🛡️", color:"#f43f5e", cat:"Security", badge:"Threat Model",
+    name:"ThreatAI — Threat Modeler",
+    desc:"Automated 6-phase AI threat modeling. Generates STRIDE analysis, DREAD scoring, risk registers, compliance gap mapping and PASTA analysis for any system architecture.",
+    tags:["STRIDE","DREAD","PASTA","ISO27001","NIST"],
+    path:"threat-model/index.html", live:true
+  },
+  {
+    icon:"🔎", color:"#ef4444", cat:"Security", badge:"Architecture Review",
+    name:"Architecture Review Agent",
+    desc:"Cross-domain architecture reviewer. Reads a system description and supporting artefacts (Terraform, Kubernetes manifests, design docs, architecture diagrams, application code) and produces a prioritised list of findings across Infrastructure, Security, Application, and AI/ML — with concrete remediation and regulatory control references.",
+    tags:["Terraform","K8s Manifests","Security Review","AI/ML Review","Remediation"],
+    external:"https://architecture-review-production.up.railway.app/", live:true
+  },
+  {
+    icon:"⚡", color:"#00d4ff", cat:"Security", badge:"AI Security",
+    name:"AI-Security Platform",
+    desc:"The first self-hosted, Claude-powered security platform for Agentic AI, RAG pipelines and MCP servers. Free to deploy, enterprise-grade protection.",
+    tags:["Agentic AI","RAG Security","MCP Servers","Self-Hosted","Enterprise"],
+    path:"ai-security/ai-security-slides.html", live:true
+  },
+  {
+    icon:"🔐", color:"#f43f5e", cat:"Security", badge:"IAM Audit",
+    name:"Access Control Review",
+    desc:"AI-driven IAM audit. Continuously reviews Azure RBAC, Entra ID permissions and privileged roles — surfacing anomalies and over-provisioned accounts.",
+    tags:["RBAC","Entra ID","IAM Audit","Compliance","Zero Trust"],
+    path:"#", live:false
+  },
+  {
+    icon:"🛡️", color:"#ef4444", cat:"Security", badge:"Data Privacy",
+    name:"Data Privacy Agent",
+    desc:"Scans, classifies and monitors sensitive data across Azure storage and databases — enforcing PDPL, GDPR and UAE data residency requirements with automated remediation.",
+    tags:["PDPL","GDPR","Data Classification","UAE Data Laws"],
+    path:"#", live:false
+  },
+
+  /* ─── Cloud ─── */
+  {
+    icon:"☁️", color:"#0ea5e9", cat:"Cloud", badge:"Cloud Pricing",
+    name:"Cloud Pricer Agent",
+    desc:"AI-powered cloud pricing intelligence across Azure, AWS and GCP. Chat queries, GPU comparisons, Excel price fill and Word document updates for UAE region.",
+    tags:["Azure · AWS · GCP","GPU Nodes","Excel Fill","UAE North"],
+    path:"cloud-pricing/app.html", live:true
+  },
+  {
+    icon:"🏗️", color:"#4f8ef7", cat:"Cloud", badge:"Reference Architect",
+    name:"Arch Sidekick",
+    desc:"Plain-English requirement in → reference architecture with specific SKUs, monthly cost estimate, compliance coverage, and the questions you should pressure-test with the customer.",
+    tags:["Azure","AWS","GCP","SKU Picker","Cost Estimate","Compliance"],
+    external:"https://arch-sidekick-production.up.railway.app/", live:true
+  },
+  {
+    icon:"💰", color:"#8b5cf6", cat:"Cloud", badge:"FinOps",
+    name:"FinOps Agent for Azure",
+    desc:"AI-powered Azure cost optimisation. Analyses spending patterns, identifies waste, right-sizes resources and generates automated savings recommendations.",
+    tags:["Azure Cost","FinOps","Optimisation","Budgets","Savings"],
+    path:"#", live:false
+  },
+
+  /* ─── Management ─── */
+  {
+    icon:"◆", color:"#22c55e", cat:"Management", badge:"CEO Brief",
+    name:"Strategic Intelligence Agent",
+    desc:"CEO morning brief. Competitor tracking, market signals, regulatory alerts and top-5 priorities — synthesised from 200+ sources daily.",
+    tags:["CEO Brief","Competitor Watch","Market Signals","AI Analysis"],
+    path:"CEO-Morning-Brief/index.html", live:true
+  },
+  {
+    icon:"◆", color:"#7c5ce4", cat:"Management", badge:"Role Lens",
+    name:"Executive Overview Agent",
+    desc:"Role-aware AI summarisation for C-suite. Choose CEO, COO, CTO, CFO or CISO — the AI reads any document and surfaces only what matters to your specific role.",
+    tags:["CEO · COO · CTO","CFO · CISO","Voice Summary","PDF","Role Lens"],
+    path:"#", live:false
+  },
+
+  /* ─── Finance ─── */
+  {
+    icon:"💼", color:"#10b981", cat:"Finance", badge:"SaaS Pricing",
+    name:"SaaS Pricing Agent",
+    desc:"AI-powered SaaS pricing intelligence. Compare vendor plans, analyse licensing models, estimate total cost of ownership and surface the best-fit SaaS solutions for enterprise procurement.",
+    tags:["SaaS Vendors","Plan Compare","TCO Analysis","Licensing","Procurement"],
+    path:"saas-pricing-agent/saas-pricing-agent.html", live:true
+  },
+  {
+    icon:"📈", color:"#22c55e", cat:"Finance", badge:"Forecasting",
+    name:"Financial Forecasting Agent",
+    desc:"AI-powered P&L forecasting, cash flow modelling and scenario planning. Upload financials and get CFO-grade commentary in minutes.",
+    tags:["Forecast","Cash Flow","Scenario Plan"],
+    path:"#", live:false
+  },
+  {
+    icon:"🧾", color:"#0ea5e9", cat:"Finance", badge:"Accounts Payable",
+    name:"Invoice & AP Agent",
+    desc:"Automated invoice processing, accounts payable matching and payment approval workflows. Reduces manual finance ops by 80%.",
+    tags:["Invoice OCR","AP Matching","Approval Flow"],
+    path:"#", live:false
+  },
+  {
+    icon:"📊", color:"#10b981", cat:"Finance", badge:"Budget Control",
+    name:"Budget Intelligence Agent",
+    desc:"Department budget tracking, variance analysis and reforecast recommendations. Surfaces overspend before it happens.",
+    tags:["Budget Track","Variance","Reforecast"],
+    path:"#", live:false
+  },
+
+  /* ─── Travel ─── */
+  {
+    icon:"✈️", color:"#f59e0b", cat:"Travel", badge:"Trip Planner",
+    name:"TravelMind AI",
+    desc:"AI-powered travel planning agent. Generate full itineraries, budget quotes, hotel and airline recommendations, visa contacts and SIM card guides for any destination.",
+    tags:["Itinerary","Budget Planner","15 Languages","Voice Summary","WhatsApp Share"],
+    path:"travelmind/travelmind.html", live:true
+  },
+  {
+    icon:"🗺️", color:"#f5a623", cat:"Travel", badge:"Visa Check",
+    name:"Visa & Permit Agent",
+    desc:"Automated visa requirement checker, application guide and document checklist for travel between any two countries. Powered by live government data.",
+    tags:["Visa Check","Documents","Processing Times"],
+    path:"#", live:false
+  },
+
+  /* ─── Legal ─── */
+  {
+    icon:"📝", color:"#f59e0b", cat:"Legal", badge:"Contract Review",
+    name:"Contract Review Agent",
+    desc:"AI-powered contract analysis. Flags unfavourable clauses, missing protections, liability exposure and compliance gaps across any contract type.",
+    tags:["Contract Analysis","Clause Flags","Liability Review"],
+    path:"#", live:false
+  },
+  {
+    icon:"⚖️", color:"#8b5cf6", cat:"Legal", badge:"Compliance Monitor",
+    name:"Compliance Monitor Agent",
+    desc:"Regulatory compliance tracking for UAE, GDPR, ISO27001, NIST and DIFC. Monitors policy changes and flags gaps in your current controls.",
+    tags:["UAE Compliance","GDPR","ISO 27001","DIFC"],
+    path:"#", live:false
+  },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   HELPERS — derive the full card theme from a single hex color
+═══════════════════════════════════════════════════════════════════ */
+function hexToRgb(hex){
+  const h = hex.replace('#','');
+  return {
+    r: parseInt(h.substring(0,2),16),
+    g: parseInt(h.substring(2,4),16),
+    b: parseInt(h.substring(4,6),16),
+  };
 }
-function closeAdmin(){
-  document.getElementById('admin-overlay').classList.remove('open');
-  document.getElementById('admin-pass').value='';
-  document.getElementById('admin-err').style.display='none';
+function rgba(hex, alpha){
+  const {r,g,b} = hexToRgb(hex);
+  return `rgba(${r},${g},${b},${alpha})`;
 }
-function closeAdminIfOutside(e){
-  if(e.target===document.getElementById('admin-overlay')) closeAdmin();
-}
-function checkPass(){
-  const val = document.getElementById('admin-pass').value;
-  if(btoa(val)===PASS_HASH){
-    document.getElementById('admin-auth').style.display='none';
-    document.getElementById('admin-editor').style.display='block';
-    buildEditor();
-  } else {
-    const err=document.getElementById('admin-err');
-    err.style.display='block';
-    document.getElementById('admin-pass').value='';
-    setTimeout(()=>err.style.display='none',3000);
-  }
+function darken(hex, amount = 0.25){
+  const {r,g,b} = hexToRgb(hex);
+  const f = 1 - amount;
+  return `rgb(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)})`;
 }
 
-function buildEditor(){
-  const container=document.getElementById('cards-editor');
-  container.innerHTML='';
+function cardStyle(color, delay){
+  const color2 = darken(color, 0.25);
+  return [
+    `--card-glow:radial-gradient(circle at 50% 0%,${rgba(color,0.10)},transparent 70%)`,
+    `--card-rim:${rgba(color,0.35)}`,
+    `--icon-bg:${rgba(color,0.10)}`,
+    `--icon-rim:${rgba(color,0.25)}`,
+    `--badge-color:${color}`,
+    `--badge-bg:${rgba(color,0.10)}`,
+    `--badge-rim:${rgba(color,0.25)}`,
+    `--card-gradient:linear-gradient(90deg,${color},${color2})`,
+    `--card-accent:${color}`,
+    `animation-delay:${delay}s`,
+  ].join(';');
+}
 
-  // Get all non-coming-soon cards
-  const cards=[...document.querySelectorAll('#portal-grid .card:not(.coming-soon)')];
-  if(!cards.length){
-    container.innerHTML='<div style="font-size:13px;color:var(--text3);padding:12px 0">No live cards found.</div>';
+function resolveUrl(agent){
+  if(!agent.live) return null;
+  if(agent.external) return agent.external;
+  if(!agent.path || agent.path === '#') return null;
+  return (BASE + '/' + agent.path).replace(/\/+/g,'/').replace(':/','://');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RENDERING
+═══════════════════════════════════════════════════════════════════ */
+
+let activeTab = CATEGORIES[0].id;
+
+function renderTabs(){
+  const wrap = document.getElementById('tabs');
+  wrap.innerHTML = CATEGORIES.map(c => {
+    const total = AGENTS.filter(a => a.cat === c.id).length;
+    const live  = AGENTS.filter(a => a.cat === c.id && a.live).length;
+    const cls   = 'tab-pill' + (activeTab === c.id ? ' active' : '');
+    return `<div class="${cls}" data-tab="${c.id}" onclick="switchTab('${c.id}',this)">
+      <span class="tab-icon">${c.icon}</span>
+      <span>${c.label}</span>
+      <span class="tab-count">${live}/${total}</span>
+    </div>`;
+  }).join('');
+}
+
+function switchTab(id, el){
+  activeTab = id;
+  document.querySelectorAll('.tab-pill').forEach(p => p.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const cat = CATEGORIES.find(c => c.id === id);
+  document.getElementById('section-label').textContent = (cat?.label || id) + ' Tools';
+  renderGrid();
+}
+
+function renderGrid(){
+  const grid = document.getElementById('portal-grid');
+  const items = AGENTS.filter(a => a.cat === activeTab);
+
+  if(!items.length){
+    grid.innerHTML = `<div class="empty-state">// no tools in this category yet</div>`;
     return;
   }
 
-  cards.forEach((card,i)=>{
-    const title = card.querySelector('.card-title')?.textContent.trim()||'Card '+(i+1);
-    const icon  = card.querySelector('.card-icon')?.textContent.trim()||'';
-    const desc  = card.querySelector('.card-desc')?.textContent.trim()||'';
-    const badge = card.querySelector('.card-badge')?.childNodes[1]?.textContent.trim()||
-                  card.querySelector('.card-badge')?.textContent.replace(/\s+/g,' ').trim()||'';
-    const href  = card.getAttribute('href')||'';
-    const tags  = [...card.querySelectorAll('.tag')].map(t=>t.textContent.trim()).join(', ');
-
-    const row=document.createElement('div');
-    row.className='card-edit-row';
-    row.dataset.index=i;
-    row.innerHTML=`
-      <div class="card-edit-name"><span>${icon}</span>${title}</div>
-      <div class="edit-row">
-        <div class="edit-field">
-          <div class="admin-label">Title</div>
-          <input class="admin-input" data-field="title" style="margin:0" value="${escHtml(title)}">
-        </div>
-        <div class="edit-field">
-          <div class="admin-label">Badge label</div>
-          <input class="admin-input" data-field="badge" style="margin:0" value="${escHtml(badge.replace(/^·?\s*/,''))}">
-        </div>
-      </div>
-      <div class="edit-field" style="margin-top:10px">
-        <div class="admin-label">URL</div>
-        <input class="admin-input" data-field="href" style="margin:0" value="${escHtml(href)}">
-      </div>
-      <div class="edit-field" style="margin-top:10px">
-        <div class="admin-label">Description</div>
-        <textarea class="admin-input" data-field="desc" rows="3" style="margin:0;resize:vertical">${escHtml(desc)}</textarea>
-      </div>
-      <div class="edit-field" style="margin-top:10px">
-        <div class="admin-label">Tags (comma separated)</div>
-        <input class="admin-input" data-field="tags" style="margin:0" value="${escHtml(tags)}">
+  grid.innerHTML = items.map((a, i) => {
+    const style = cardStyle(a.color, i * 0.05);
+    const url = resolveUrl(a);
+    const inner = `
+      <div class="card-bar"></div>
+      <div class="card-icon">${a.icon}</div>
+      <div class="card-badge"><span class="card-badge-dot"></span>${a.badge || a.cat}</div>
+      <div class="card-title">${a.name}</div>
+      <div class="card-desc">${a.desc}</div>
+      <div class="card-tags">${a.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      <div class="card-footer">
+        <span class="card-link-label">
+          ${a.live ? 'Open Portal' : 'Coming soon'}
+          <span class="card-link-arrow">→</span>
+        </span>
+        <span class="card-status">${a.live ? 'Live' : 'Soon'}</span>
       </div>
     `;
-    container.appendChild(row);
-  });
-}
-
-function escHtml(str){
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/"/g,'&quot;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;');
-}
-
-function saveChanges(){
-  const rows=document.querySelectorAll('#cards-editor .card-edit-row');
-  const liveCards=[...document.querySelectorAll('#portal-grid .card:not(.coming-soon)')];
-
-  rows.forEach((row,i)=>{
-    const card=liveCards[i];
-    if(!card) return;
-
-    const get=f=>row.querySelector(`[data-field="${f}"]`).value.trim();
-
-    // Update title
-    const titleEl=card.querySelector('.card-title');
-    if(titleEl) titleEl.textContent=get('title');
-
-    // Update description
-    const descEl=card.querySelector('.card-desc');
-    if(descEl) descEl.textContent=get('desc');
-
-    // Update href
-    card.setAttribute('href',get('href'));
-
-    // Update badge text (keep dot element)
-    const badgeEl=card.querySelector('.card-badge');
-    if(badgeEl){
-      const dot=badgeEl.querySelector('.card-badge-dot');
-      badgeEl.innerHTML='';
-      if(dot) badgeEl.appendChild(dot);
-      badgeEl.appendChild(document.createTextNode(' '+get('badge')));
+    if(a.live && url){
+      return `<a class="card" href="${url}" target="_blank" rel="noopener noreferrer" style="${style}">${inner}</a>`;
     }
-
-    // Update tags
-    const tagsWrap=card.querySelector('.card-tags');
-    if(tagsWrap){
-      tagsWrap.innerHTML='';
-      get('tags').split(',').forEach(t=>{
-        t=t.trim();
-        if(t){
-          const span=document.createElement('span');
-          span.className='tag';
-          span.textContent=t;
-          tagsWrap.appendChild(span);
-        }
-      });
-    }
-  });
-
-  closeAdmin();
-  showToast('Changes applied ✓ — remember to save your HTML file');
+    return `<div class="card coming-soon" style="${style}">${inner}</div>`;
+  }).join('');
 }
 
-// Close on Escape key
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape') closeAdmin();
-});
-
-function showToast(msg){
-  let t=document.getElementById('portal-toast');
-  if(!t){t=document.createElement('div');t.id='portal-toast';Object.assign(t.style,{position:'fixed',bottom:'24px',left:'50%',transform:'translateX(-50%) translateY(60px)',background:'#141921',border:'1px solid rgba(255,255,255,.1)',borderRadius:'10px',padding:'10px 20px',fontSize:'13px',color:'#e8edf5',boxShadow:'0 8px 32px rgba(0,0,0,.5)',transition:'transform .3s,opacity .3s',opacity:'0',zIndex:'999',fontFamily:"'Inter',sans-serif"});document.body.appendChild(t);}
-  t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
-  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(60px)';},3000);
-}
-
-// ── Tab switching ─────────────────────────────────────────────────────────
-const TAB_LABELS = {
-  technology: 'Technology Tools',
-  travel: 'Travel & Tourism',
-  management: 'Management Suite',
-  finance: 'Finance Tools',
-  legal: 'Legal & Compliance'
-};
-
-function switchTab(tab, el){
-  // Update active tab pill
-  document.querySelectorAll('.tab-pill').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-
-  // Show/hide cards
-  const cards = document.querySelectorAll('#portal-grid .card');
-  cards.forEach(card=>{
-    const cat = card.dataset.category || 'technology';
-    card.style.display = (cat === tab) ? '' : 'none';
-  });
-
-  // Update section label
-  document.getElementById('section-label').textContent = TAB_LABELS[tab] || tab;
-
-  // Update header count
-  const visible = document.querySelectorAll('#portal-grid .card[data-category="'+tab+'"]:not(.coming-soon)').length;
-  document.getElementById('tool-count').textContent = visible;
-}
-
-// ── Init ──────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded',()=>{
-  // Count per tab and update badges
-  const tabs = ['technology','travel','management','finance','legal'];
-  tabs.forEach(tab=>{
-    const total = document.querySelectorAll('#portal-grid .card[data-category="'+tab+'"]').length;
-    const live  = document.querySelectorAll('#portal-grid .card[data-category="'+tab+'"]:not(.coming-soon)').length;
-    const el = document.getElementById('count-'+tab);
-    if(el) el.textContent = live+'/'+total;
-  });
-
-  // Default: show technology
-  const cards = document.querySelectorAll('#portal-grid .card');
-  cards.forEach(card=>{
-    const cat = card.dataset.category || 'technology';
-    if(cat !== 'technology') card.style.display = 'none';
-  });
-
-  // Header total count = live tech tools
-  const liveCount = document.querySelectorAll('#portal-grid .card[data-category="technology"]:not(.coming-soon)').length;
-  document.getElementById('tool-count').textContent = liveCount;
-});
+/* ═══════════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════════ */
+document.getElementById('live-total').textContent = AGENTS.filter(a => a.live).length;
+renderTabs();
+renderGrid();
 </script>
 </body>
 </html>
